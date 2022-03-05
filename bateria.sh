@@ -17,7 +17,7 @@ if [ "$discharging" -eq 1 ]
 then
 	texto="Descarregando...${tempo}"
 	exibir=1
-	test "$percent -lt 30" && alerta='AVISO IMPORTANTE - '
+	if [ "$percent" -lt 30 ]; then alerta='AVISO IMPORTANTE - '; fi
 else
 	if [ "$percent" -lt 30 ]; then exibir=1; fi	
 fi
