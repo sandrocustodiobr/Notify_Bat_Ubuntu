@@ -4,6 +4,7 @@
 device=/org/freedesktop/UPower/devices/battery_BAT1	# upower -e lista os dispositivos do seu notebook
 limiteMin=30						# abaixo do minimo se torna IMPORTANTE
 limiteMax=50						# abaixo do maximo exibe as mensagens
+limiteCritico=18					# abaixo do qual o aviso passa a ser critico
 
 # para uso do script
 percent=`upower -i ${device} | grep percentage | cut -d: -f2 | tr '%' ' ' ` 
@@ -12,19 +13,25 @@ tempo=`upower -i ${device} | grep 'time to empty' | cut -d: -f2`
 hora=`date +%H:%M`
 exibir=0
 alerta=''
+timeout=3000
 
-# enviando para o arquivo .out que foi definido na crontab
+# os comandos ECHO enviam para o arquivo .out que foi definido na crontab
 echo "Bateria:${percent}%"
 echo "discharging:$discharging"
+echo "Limites: $limiteMax $limiteMin $limiteCritico"
 
 # processamento do script
 if [ "$discharging" -eq 1 ]
 then
+	echo "Descarregando"
 	texto="${hora}  Descarregando, restam${tempo}"
-	if [ "$percent" -lt "$limiteMax" ]; then exibir=1; fi
-	if [ "$percent" -lt "$limiteMin" ]; then alerta='AVISO IMPORTANTE - '; fi
+	if [ "$percent" -lt "$limiteMax" ]; then exibir=1; echo "Abaixo do limiteMax"; fi
+	if [ "$percent" -lt "$limiteMin" ]; then alerta='AVISO IMPORTANTE - '; timeout=30000; echo "Abaixo do limiteMin"; fi
+	if [ "$percent" -lt "$limiteCritico" ]; then timeout=180000; echo "Abaixo do limiteCritico"; fi
 else
+	echo "Carregando"
 	texto="${hora}  Carregando..."
-	if [ "$percent" -lt "$limiteMin" ]; then exibir=1; fi	
+	if [ "$percent" -lt "$limiteMin" ]; then exibir=1; echo "Abaixo do limiteMin"; fi	
 fi
-if [ "$exibir" -eq 1 ]; then notify-send "${alerta}Bateria:${percent}%" "$texto"; fi
+echo "Notificando"
+if [ "$exibir" -eq 1 ]; then `notify-send -t ${timeout} "${alerta}Bateria:${percent}%" "$texto"`; fi
