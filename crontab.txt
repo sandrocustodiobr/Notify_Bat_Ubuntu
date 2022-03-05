@@ -1,0 +1,12 @@
+# m h  dom mon dow   command
+
+0,5,10,15,20,25,30,35,40,45,50,55 * * * * XDG_RUNTIME_DIR=/run/user/$(id -u) /bin/bash -c '/dados/bin/bateria.sh > /tmp/bateria.out 2> /tmp/bateria.err'
+
+
+
+#testes
+#* * * * * /bin/bash -c 'touch /tmp/teste.out'
+#* * * * * XDG_RUNTIME_DIR=/run/user/$(id -u) notify-send Hey "this is dog!"
+
+
+
