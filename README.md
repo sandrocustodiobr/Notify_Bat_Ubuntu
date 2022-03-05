@@ -5,3 +5,4 @@ Use o arquivo contrab.txt para colocar na crontab do seu usuário. A única linh
 
 E escolha a pasta do arquivo bateria.sh, pois o meu usei em /dados/bin. Isto deve ser ajustado na contrab.
 
+No script bateria.sh podem ser configurados o caminho do "device" e os limites (limiteMin e limiteMax). Abaixo de limiteMin, é considerado "AVISO IMPORTANTE" e anaixo de limiteMax as notificações começam a aparecer na tela.
