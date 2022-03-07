@@ -7,7 +7,7 @@ limiteMax=50						# abaixo do maximo exibe as mensagens
 limiteCritico=18					# abaixo do qual o aviso passa a ser critico
 
 # para uso do script
-percent=`upower -i ${device} | grep percentage | cut -d: -f2 | tr '%' ' '` 
+percent=`upower -i ${device} | grep percentage | cut -d: -f2 | tr '%' ' ' ` 
 discharging=`upower -i ${device} | grep state | grep discharging | wc -l`
 tempo=`upower -i ${device} | grep 'time to empty' | cut -d: -f2`
 hora=`date +%H:%M`
@@ -15,18 +15,23 @@ exibir=0
 alerta=''
 timeout=3000
 
+# os comandos ECHO enviam para o arquivo .out que foi definido na crontab
+echo "Bateria:${percent}%"
+echo "discharging:$discharging"
+echo "Limites: $limiteMax $limiteMin $limiteCritico"
+
 # processamento do script
 if [ "$discharging" -eq 1 ]
 then
+	echo "Descarregando"
 	texto="${hora}  Descarregando, restam${tempo}"
-	if [ "$percent" -lt "$limiteMax" ]; then exibir=1; fi
-	if [ "$percent" -lt "$limiteMin" ]; then alerta='AVISO IMPORTANTE - '; timeout=30000; fi
-	if [ "$percent" -lt "$limiteCritico" ]; then timeout=180000; fi
+	if [ "$percent" -lt "$limiteMax" ]; then exibir=1; echo "Abaixo do limiteMax"; fi
+	if [ "$percent" -lt "$limiteMin" ]; then alerta='AVISO IMPORTANTE - '; timeout=30000; echo "Abaixo do limiteMin"; fi
+	if [ "$percent" -lt "$limiteCritico" ]; then timeout=180000; echo "Abaixo do limiteCritico"; fi
 else
-
+	echo "Carregando"
 	texto="${hora}  Carregando..."
-	if [ "$percent" -lt "$limiteMin" ]; then exibir=1; fi	
+	if [ "$percent" -lt "$limiteMin" ]; then exibir=1; echo "Abaixo do limiteMin"; fi	
 fi
-
-# notificando (mostrando o aviso)
+echo "Notificando"
 if [ "$exibir" -eq 1 ]; then `notify-send -t ${timeout} "${alerta}Bateria:${percent}%" "$texto"`; fi
