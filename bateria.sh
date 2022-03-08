@@ -25,7 +25,7 @@ then
 else
 
 	texto="${hora}  Carregando..."
-	if [ "$percent" -lt "$limiteMin" ]; then exibir=1; fi	
+	if [ "$percent" -lt "$limiteCritico" ]; then exibir=1; fi	
 fi
 
 # notificando (mostrando o aviso)

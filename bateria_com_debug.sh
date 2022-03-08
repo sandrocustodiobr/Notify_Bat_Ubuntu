@@ -31,7 +31,7 @@ then
 else
 	echo "Carregando"
 	texto="${hora}  Carregando..."
-	if [ "$percent" -lt "$limiteMin" ]; then exibir=1; echo "Abaixo do limiteMin"; fi	
+	if [ "$percent" -lt "$limiteCritico" ]; then exibir=1; echo "Abaixo do limiteCritico"; fi	
 fi
 echo "Notificando"
 if [ "$exibir" -eq 1 ]; then `notify-send -t ${timeout} "${alerta}Bateria:${percent}%" "$texto"`; fi
